@@ -1,5 +1,7 @@
 # vue-todo-list
 
+# vue-todo-list
+
 ## Project setup
 ```
 npm install
