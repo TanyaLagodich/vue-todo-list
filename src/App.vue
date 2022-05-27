@@ -25,12 +25,22 @@ export default {
       tasks: [],
     }
   },
+  created() {
+    if (localStorage.getItem('tasks')) {
+      this.tasks = JSON.parse(localStorage.getItem('tasks'));
+    }
+  },
   methods: {
     addTask(task) {
       this.tasks.push(task);
+      this.updateLocalStorage();
     },
     deleteTask(index) {
       this.tasks.splice(index, 1);
+      this.updateLocalStorage();
+    },
+    updateLocalStorage() {
+      localStorage.setItem('tasks', JSON.stringify(this.tasks));
     }
   }
 }
