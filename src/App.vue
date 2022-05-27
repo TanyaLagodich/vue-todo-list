@@ -1,28 +1,62 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="todo-app">
+      <h1 class="todo-app__title">todo list</h1>
+        <add-task 
+            @add-task="addTask"
+        />
+        <tasks-list 
+          :tasks="tasks"
+          @delete-task="deleteTask"
+        />
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AddTask from '@/components/AddTask.vue';
+import TasksList from '@/components/TasksList.vue';
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    AddTask,
+    TasksList,
+  },
+  data() {
+    return {
+      tasks: [],
+    }
+  },
+  methods: {
+    addTask(task) {
+      this.tasks.push(task);
+    },
+    deleteTask(index) {
+      this.tasks.splice(index, 1);
+    }
   }
 }
 </script>
+<style lang="scss">
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  body {
+    height: 100vh;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .todo-app {
+    max-width: 50%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    min-height: 80%;
+
+    &__title {
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 36px;
+      line-height: 44px;
+      color: #0D062D;
+    }
+  }
 </style>
