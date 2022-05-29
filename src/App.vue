@@ -1,23 +1,27 @@
 <template>
     <div class="todo-app">
-      <h1 class="todo-app__title">todo list</h1>
-        <add-task 
+      <h1 class="todo-app__title">
+        todo list
+      </h1>
+        <adding-task 
             @add-task="addTask"
         />
         <tasks-list 
           :tasks="tasks"
+          @edit-task="editTask"
+          @save-task="saveTask"
           @delete-task="deleteTask"
         />
     </div>
 </template>
 
 <script>
-import AddTask from '@/components/AddTask.vue';
+import AddingTask from '@/components/AddingTask.vue';
 import TasksList from '@/components/TasksList.vue';
 
 export default {
   components: {
-    AddTask,
+    AddingTask,
     TasksList,
   },
   data() {
@@ -33,6 +37,13 @@ export default {
   methods: {
     addTask(task) {
       this.tasks.push(task);
+      this.updateLocalStorage();
+    },
+    editTask(index) {
+      this.tasks[index].editing = true;
+    },
+    saveTask({ task, index }) {
+      this.tasks[index] = task;
       this.updateLocalStorage();
     },
     deleteTask(index) {
@@ -53,20 +64,20 @@ export default {
     font-family: 'Inter';
     font-style: normal;
     font-weight: 500;
+    background-color: #85B0D1;
   }
 
   .todo-app {
     max-width: 50%;
     margin: 0 auto;
-    background-color: #ffffff;
     min-height: 80%;
 
     &__title {
-      text-align: center;
       text-transform: uppercase;
-      font-size: 36px;
-      line-height: 44px;
-      color: #0D062D;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 29px;
+      color: #FEE59B;;
     }
   }
 </style>
