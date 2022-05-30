@@ -8,7 +8,7 @@
         />
         <tasks-list 
           :tasks="tasks"
-          @edit-task="editTask"
+          @sort-tasks="sortTasks"
           @save-task="saveTask"
           @delete-task="deleteTask"
         />
@@ -35,12 +35,15 @@ export default {
     }
   },
   methods: {
+    sortTasks({ draggableIndex, newIndex }) {
+      const draggableElem = this.tasks[draggableIndex];
+      this.tasks.splice(draggableIndex, 1);
+      this.tasks.splice(newIndex, 0, draggableElem);
+      this.updateLocalStorage();
+    },
     addTask(task) {
       this.tasks.push(task);
       this.updateLocalStorage();
-    },
-    editTask(index) {
-      this.tasks[index].editing = true;
     },
     saveTask({ task, index }) {
       this.tasks[index] = task;
