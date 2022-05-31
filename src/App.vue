@@ -1,16 +1,16 @@
 <template>
     <div class="todo-app">
-      <h1 class="todo-app__title">
-        todo list
-      </h1>
+        <h1 class="todo-app__title">
+          todo list
+        </h1>
         <adding-task 
             @add-task="addTask"
         />
         <tasks-list 
-          :tasks="tasks"
-          @sort-tasks="sortTasks"
-          @save-task="saveTask"
-          @delete-task="deleteTask"
+            :tasks="tasks"
+            @sort-tasks="sortTasks"
+            @save-task="saveTask"
+            @delete-task="deleteTask"
         />
     </div>
 </template>
@@ -20,43 +20,43 @@ import AddingTask from '@/components/AddingTask.vue';
 import TasksList from '@/components/TasksList.vue';
 
 export default {
-  components: {
-    AddingTask,
-    TasksList,
-  },
-  data() {
-    return {
-      tasks: [],
+    components: {
+        AddingTask,
+        TasksList,
+    },
+    data() {
+        return {
+            tasks: [],
+        }
+    },
+    created() {
+        if (localStorage.getItem('tasks')) {
+            this.tasks = JSON.parse(localStorage.getItem('tasks'));
+        }
+    },
+    methods: {
+        sortTasks({ draggableIndex, newIndex }) {
+            const draggableElem = this.tasks[draggableIndex];
+            this.tasks.splice(draggableIndex, 1);
+            this.tasks.splice(newIndex, 0, draggableElem);
+            this.updateLocalStorage();
+        },
+        addTask(task) {
+            this.tasks.push(task);
+            this.updateLocalStorage();
+        },
+        saveTask({ task, index }) {
+            this.tasks[index] = task;
+            this.updateLocalStorage();
+        },
+        deleteTask(index) {
+            this.tasks.splice(index, 1);
+            this.updateLocalStorage();
+        },
+        updateLocalStorage() {
+            localStorage.setItem('tasks', JSON.stringify(this.tasks));
+        }
     }
-  },
-  created() {
-    if (localStorage.getItem('tasks')) {
-      this.tasks = JSON.parse(localStorage.getItem('tasks'));
-    }
-  },
-  methods: {
-    sortTasks({ draggableIndex, newIndex }) {
-      const draggableElem = this.tasks[draggableIndex];
-      this.tasks.splice(draggableIndex, 1);
-      this.tasks.splice(newIndex, 0, draggableElem);
-      this.updateLocalStorage();
-    },
-    addTask(task) {
-      this.tasks.push(task);
-      this.updateLocalStorage();
-    },
-    saveTask({ task, index }) {
-      this.tasks[index] = task;
-      this.updateLocalStorage();
-    },
-    deleteTask(index) {
-      this.tasks.splice(index, 1);
-      this.updateLocalStorage();
-    },
-    updateLocalStorage() {
-      localStorage.setItem('tasks', JSON.stringify(this.tasks));
-    }
-  }
 }
 </script>
 <style lang="scss">
@@ -74,6 +74,10 @@ export default {
     max-width: 50%;
     margin: 0 auto;
     min-height: 80%;
+
+    @media (max-width: 768px) {
+      max-width: 85%;
+    }
 
     &__title {
       text-transform: uppercase;

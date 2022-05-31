@@ -1,19 +1,29 @@
 <template>
     <div class="task">
-        <input 
-            v-if="editingTask"
-            v-model="taskCopy.text"
-            type="text"
+        <div
+            v-if="editingTask"  
+            class="task__input-wrap"
         >
-        <div v-else>
+            <input 
+                v-model="taskCopy.text"
+                type="text"
+                class="task__edit-input"
+                @keyup.enter="saveTask"
+                @keyup.esc="cancelEditing"
+            >
+        </div>
+        <div 
+            v-else
+             class="task__input-wrap"
+        >
             <input 
                 v-model="taskCopy.checked"
                 type="checkbox" 
                 :id="taskCopy.id" 
+                @change="saveTask"
             />
             <label 
                 :for="taskCopy.id"
-                class="todo-app__label"
             >
                 <span>
                     {{ taskCopy.text }}
@@ -22,13 +32,13 @@
         </div>
         <div>
             <button
-                v-if="editingTask"
+                v-if="editingTask && !taskCopy.checked"
                 class="task__button task__button_saving"
                 @click="saveTask"
             >
             </button>
             <button
-                v-else
+                v-else-if="!taskCopy.checked"
                 class="task__button task__button_editing"
                 @click="editingTask = true"
             >
@@ -62,6 +72,10 @@ export default {
         saveTask() {
             this.editingTask = false;
             this.$emit('save-task', this.taskCopy);
+        },
+        cancelEditing() {
+            this.editingTask = false;
+            this.taskCopy.text = this.$props.task.text;
         }
     }
 }
@@ -77,6 +91,23 @@ export default {
         align-items: center;
         justify-content: space-between;
 
+        &__input-wrap {
+            flex-grow: 1;
+            max-width: 82%;
+
+            input[type="text"] {
+                width: 100%;
+                background: #F9F1F1;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                border-radius: 6px;
+                box-sizing: border-box;
+                border: none;
+                outline: none;
+                padding: 14px 16px;
+                min-height: 42px;
+            }
+        }
+
         input[type="checkbox"] {
             display: none;
 
@@ -87,16 +118,21 @@ export default {
                     transition: color .3s ease;
 
                     &::before {
-                        content: '\2713';
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         color: #000000;
+
+                        background-image: url('../assets/icons/check.svg');
+                        background-repeat: no-repeat;
+                        background-size: 11px;
+                        background-position: center;
                     }
 
                     span {
                         &:after {
                             width: 100%;
+                            background-color: #000000;
                             animation: crossout .3s ease;
                         }
                     }
@@ -107,8 +143,10 @@ export default {
         label {
             position: relative;
             padding-left: 31px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
             cursor: pointer; 
-            flex-grow: 1;
 
             &::before {
                 content: '';
@@ -123,17 +161,22 @@ export default {
 
             span {
                 position: relative;
-                &:after {
+                &::after {
                     content: '';
                     position: absolute;
                     top: 50%;
+                    bottom: 49%;
                     left: 0;
                     display: block;
                     width: 0;
-                    height: 1px;
-                    background-color: #000000;
+                    background-color: transparent;
                 }
             }
+        }
+
+        &__buttons {
+            display: flex;
+            align-items: center;
         }
 
         &__button {

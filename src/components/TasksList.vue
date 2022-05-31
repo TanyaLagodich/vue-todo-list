@@ -44,19 +44,24 @@ import TaskSingle from './TaskSingle.vue'
         },
         methods: {
             dragOver(event) {
+                // получаем элемент, над которым находится переносимый элемент
                 const currentElement = event.target.closest('li');
                 const currentIndex = Number(currentElement.dataset.index);
 
+                // если мы находимся над переносимым элементом
+                // то ничего делать не нужно
                 const isMoveable = this.dragElementIndex !== currentIndex;
                 if (!isMoveable) {
                     return;
                 }
 
-                this.dragEnterElementIndex = currentIndex;
-
-                const dragElem = this.$el.querySelector(`[data-index="${this.dragElementIndex}"]`)
+                // переносимый элемент
+                const dragElem = this.$el.querySelector(`[data-index="${this.dragElementIndex}"]`);
+                // следующий элемент, после элемента, НАД которым переносим gragElem
                 const nextElement = this.getNextElement(event.clientY, currentElement);
 
+                // если nextElem и его предыдущий элемент это наш dragElem,
+                // то ничего не делаем
                 if (nextElement && 
                     dragElem === nextElement.previousElementSibling ||
                     dragElem === nextElement
@@ -64,21 +69,29 @@ import TaskSingle from './TaskSingle.vue'
                     return;
                 }
 
+                // получаем весь список с элементами
                 const list = this.$el;
+                // вставляем над dragElemen перед nextELement
                 list.insertBefore(dragElem, nextElement);
+
+                // сохраняем index, на который поместим наш dragElem
+                this.dragEnterElementIndex = currentIndex;
             },
             dragDrop() {
-                console.log(this.dragElementIndex, this.dragEnterElementIndex)
-                if (this.dragElementIndex !== this.dragEnterElementIndex) {
+                if (this.dragEnterElementIndex && this.dragElementIndex !== this.dragEnterElementIndex) {
                     this.$emit('sort-tasks', { draggableIndex: this.dragElementIndex, newIndex: this.dragEnterElementIndex });
                 }
                 this.dragEnterElementIndex = '';
                 this.dragElementIndex = '';
             },
             getNextElement(cursorPosition, currentElement) {
+                // получаем координаты элемента, над которым переносим dragElem
                 const currentElementCoord = currentElement.getBoundingClientRect();
+                // получаем середину этого элемента по координатам Y + половина высоты элемента
                 const currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
 
+                // если элемент пересек половину высоты элемента, то берем высоту следующего элемента
+                // иначе берем элемент, над которым находимся
                 const nextElement = (cursorPosition < currentElementCenter) ?
                                     currentElement :
                                     currentElement.nextElementSibling;
