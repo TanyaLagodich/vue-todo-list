@@ -69,16 +69,14 @@ import TaskSingle from './TaskSingle.vue'
                     return;
                 }
 
-                // получаем весь список с элементами
-                const list = this.$el;
-                // вставляем над dragElemen перед nextELement
-                list.insertBefore(dragElem, nextElement);
-
                 // сохраняем index, на который поместим наш dragElem
                 this.dragEnterElementIndex = currentIndex;
             },
             dragDrop() {
-                if (this.dragEnterElementIndex && this.dragElementIndex !== this.dragEnterElementIndex) {
+                if (
+                    (this.dragEnterElementIndex || this.dragEnterElementIndex === 0) && 
+                    this.dragElementIndex !== this.dragEnterElementIndex
+                ) {
                     this.$emit('sort-tasks', { draggableIndex: this.dragElementIndex, newIndex: this.dragEnterElementIndex });
                 }
                 this.dragEnterElementIndex = '';

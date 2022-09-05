@@ -37,8 +37,13 @@ export default {
     methods: {
         sortTasks({ draggableIndex, newIndex }) {
             const draggableElem = this.tasks[draggableIndex];
-            this.tasks.splice(draggableIndex, 1);
-            this.tasks.splice(newIndex, 0, draggableElem);
+            const enterDragElem = this.tasks[newIndex];
+            console.log({ draggableIndex, draggableElem, newIndex, enterDragElem });
+            this.$set(this.tasks, draggableIndex, enterDragElem);
+            this.$set(this.tasks, newIndex, draggableElem);
+            console.log(this.tasks);
+            // this.tasks.splice(draggableIndex, 1);
+            // this.tasks.splice(newIndex, 0, draggableElem);
             this.updateLocalStorage();
         },
         addTask(task) {
